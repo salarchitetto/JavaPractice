@@ -16,7 +16,7 @@ public class ConsumerDemo {
 
     public static void main(String[] args) {
 
-        final Logger logger = LoggerFactory.getLogger(ConsumerDemo.class);;
+        final Logger logger = LoggerFactory.getLogger(ConsumerDemo.class);
 
         Properties properties = new Properties();
 
