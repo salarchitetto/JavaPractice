@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class TwitterConsumer {
+
     public static void main(String[] args) {
 
         Logger logger = LoggerFactory.getLogger(TwitterConsumer.class);

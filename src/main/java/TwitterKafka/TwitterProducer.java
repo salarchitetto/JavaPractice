@@ -11,8 +11,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
 
-import java.util.Collections;
-
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import com.google.gson.*;
@@ -42,20 +40,26 @@ public class TwitterProducer {
 
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, configs.BOOTSTRAP_SERVERS);
-        properties.put(ProducerConfig.ACKS_CONFIG, "1");
         properties.put(ProducerConfig.LINGER_MS_CONFIG, 500);
-        properties.put(ProducerConfig.RETRIES_CONFIG, 0);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
+        //Safe producer settings!
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");
+        properties.put(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+        properties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+
+        //high throughput producer
+        properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        properties.put(ProducerConfig.LINGER_MS_CONFIG, "20");
+        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024)); //32kb
 
 
         //setting creds- visit twitter.com to get yours
         logger.info("Setting up Twitter configs");
         twitter.setOAuthConsumer(configs.TWITTER_API_KEY, configs.TWITTER_API_SECRET);
         twitter.setOAuthAccessToken(new AccessToken(configs.TWITTER_ACCESS_TOKEN, configs.TWITTER_TOKEN_SECRET));
-
-
 
         Authentication authentication = new OAuth1(
                 configs.TWITTER_API_KEY,
@@ -65,7 +69,7 @@ public class TwitterProducer {
         );
 
         StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
-        endpoint.trackTerms(Collections.singletonList(configs.HASHTAGS));
+        endpoint.trackTerms(configs.TERMS_HASHTAGS);
 
         BlockingQueue<String> queue = new LinkedBlockingQueue<>(10000);
 
