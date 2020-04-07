@@ -3,11 +3,10 @@ package TwitterKafka;
 import com.google.gson.annotations.SerializedName;
 
 public class Tweet {
-    private static long ID;
-
+    private String id;
     private String text;
     private String lang;
-    private Users user;
+//    private Users user;
 
     @SerializedName("retweet_count")
     private int retweetCount;
@@ -15,21 +14,21 @@ public class Tweet {
     @SerializedName("favorite_count")
     private int favoriteCount;
 
-    public Tweet(long id, String text, String lang, Users user, int retweetCount, int favoriteCount) {
-        this.ID = id;
+    public Tweet(String id, String text, String lang, int retweetCount, int favoriteCount) {
+        this.id = id;
         this.text = text;
         this.lang = lang;
-        this.user = user;
+//        this.user = user;
         this.retweetCount = retweetCount;
         this.favoriteCount = favoriteCount;
     }
 
-    public static long getId() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setId(long id) {
-        this.ID = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getText() {
@@ -48,14 +47,6 @@ public class Tweet {
         this.lang = lang;
     }
 
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
     public int getRetweetCount() {
         return retweetCount;
     }
@@ -68,15 +59,16 @@ public class Tweet {
         return favoriteCount;
     }
 
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
     @Override
     public String toString() {
-        return "Tweet{" +
-                "id=" + ID +
-                ", text='" + text + '\'' +
-                ", lang='" + lang + '\'' +
-                ", user=" + user +
-                ", retweetCount=" + retweetCount +
-                ", favoriteCount=" + favoriteCount +
-                '}';
+        return "{\"id\":" + "\"" + id  + "\"" + "," +
+                "\"text\":" + "\"" + text + "\"" + "," +
+                "\"lang\":"  + "\"" + lang + "\"" + "," +
+                "\"retweetCount\":" + "\"" + retweetCount + "\"" + "," +
+                "\"favoriteCount\":" + "\"" + favoriteCount + "\"" + "}";
     }
 }

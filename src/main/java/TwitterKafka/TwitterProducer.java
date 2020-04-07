@@ -9,7 +9,6 @@ import com.twitter.hbc.httpclient.auth.OAuth1;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.LongSerializer;
 
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
@@ -40,8 +39,8 @@ public class TwitterProducer {
 
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, configs.BOOTSTRAP_SERVERS);
-        properties.put(ProducerConfig.LINGER_MS_CONFIG, 500);
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+//        properties.put(ProducerConfig.LINGER_MS_CONFIG, 500);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         //Safe producer settings!
@@ -82,20 +81,19 @@ public class TwitterProducer {
 
         client.connect();
 
-        KafkaProducer<Long, String> producer = new KafkaProducer<>(properties);
+        KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
         while (true) {
             try {
                 Tweet tweet = gson.fromJson(queue.take(), Tweet.class);
                 logger.info(String.format("Grabbin Tweets"));
-                long key = Tweet.getId();
+                String key = tweet.getId();
                 String msg = tweet.toString();
-                ProducerRecord<Long, String> record = new ProducerRecord<>(configs.TOPIC, key, msg);
+                ProducerRecord<String, String> record = new ProducerRecord<>(configs.TOPIC, key, msg);
                 producer.send(record);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
     }
 }
