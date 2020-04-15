@@ -1,10 +1,9 @@
-package TwitterKafka;
+package com.github.javaPractice.kafka.twitterKafka;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -34,12 +33,7 @@ public class ElasticSearchConsumer {
 
         RestClientBuilder builder = RestClient.builder(
                 new HttpHost(elasticConfigs.ELASTIC_HOST_NAME, 443, "https"))
-                .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-                    @Override
-                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
-                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                    }
-                });
+                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
 
         RestHighLevelClient client = new RestHighLevelClient(builder);
         return client;
@@ -63,6 +57,8 @@ public class ElasticSearchConsumer {
                 StringDeserializer.class.getName());
 
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, configs.GROUP_ID);
+//        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+//        properties.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "1");
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(Arrays.asList(configs.TOPIC));
@@ -81,6 +77,9 @@ public class ElasticSearchConsumer {
                 try {
 
                     logger.info(String.valueOf(record.key()));
+
+
+
                     IndexRequest indexRequest = new IndexRequest("tweets")
                             .source(record.value(), XContentType.JSON)
                             .id(String.valueOf(record.key())); // this is to make our consumer idempotent

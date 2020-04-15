@@ -1,4 +1,4 @@
-package TwitterKafka;
+package com.github.javaPractice.kafka.twitterKafka;
 
 import com.google.gson.annotations.SerializedName;
 

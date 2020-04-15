@@ -1,4 +1,4 @@
-package TwitterKafka;
+package com.github.javaPractice.kafka.twitterKafka;
 
 import com.google.common.collect.Lists;
 
@@ -16,9 +16,10 @@ public class TwitterConfigs {
     //twitter configs
     public final String TWITTER_API_KEY = "";
     public final String TWITTER_API_SECRET = "";
-    public final String TWITTER_ACCESS_TOKEN = "-";
+    public final String TWITTER_ACCESS_TOKEN = "";
     public final String TWITTER_TOKEN_SECRET = "";
 
-    public List<String> TERMS_HASHTAGS = Lists.newArrayList("Juventus", "Real Madrid", "Manchester United", "PSG", "Liverpool" );
+    public List<String> TERMS_HASHTAGS = Lists.newArrayList("Juventus", "Real Madrid", "Manchester United",
+            "PSG", "Liverpool" );
 
 }

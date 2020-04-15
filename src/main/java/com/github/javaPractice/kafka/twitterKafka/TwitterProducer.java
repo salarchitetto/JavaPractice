@@ -1,4 +1,4 @@
-package TwitterKafka;
+package com.github.javaPractice.kafka.twitterKafka;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.Constants;
@@ -89,6 +89,7 @@ public class TwitterProducer {
                 logger.info(String.format("Grabbin Tweets"));
                 String key = tweet.getId();
                 String msg = tweet.toString();
+                logger.info(tweet.toString());
                 ProducerRecord<String, String> record = new ProducerRecord<>(configs.TOPIC, key, msg);
                 producer.send(record);
             } catch (InterruptedException e) {
